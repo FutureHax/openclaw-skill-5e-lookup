@@ -21,85 +21,85 @@ That's it. The tool output IS the answer. Do not add disclaimers, do not rephras
 
 ## How to use
 
-Run the lookup tool at `{baseDir}/tools/lookup.sh` via the exec tool. Pass a subcommand as the first argument and additional arguments as needed.
+Run the lookup tool at `/home/marvin/.openclaw/workspaces/zordon/skills/5e-lookup/tools/lookup.sh` via the exec tool. Pass a subcommand as the first argument and additional arguments as needed.
 
 ### Monster lookup
 
 ```bash
 # Look up a monster by name (searches common sources automatically)
-bash {baseDir}/tools/lookup.sh monster "Goblin"
+bash /home/marvin/.openclaw/workspaces/zordon/skills/5e-lookup/tools/lookup.sh monster "Goblin"
 
 # Look up a monster from a specific source
-bash {baseDir}/tools/lookup.sh monster "Mind Flayer" MM
+bash /home/marvin/.openclaw/workspaces/zordon/skills/5e-lookup/tools/lookup.sh monster "Mind Flayer" MM
 
 # List all monsters from a source (returns names + CR only)
-bash {baseDir}/tools/lookup.sh monsters MM
+bash /home/marvin/.openclaw/workspaces/zordon/skills/5e-lookup/tools/lookup.sh monsters MM
 ```
 
 ### Spell lookup
 
 ```bash
 # Look up a spell by name
-bash {baseDir}/tools/lookup.sh spell "Fireball"
+bash /home/marvin/.openclaw/workspaces/zordon/skills/5e-lookup/tools/lookup.sh spell "Fireball"
 
 # Look up a spell from a specific source
-bash {baseDir}/tools/lookup.sh spell "Silvery Barbs" SCC
+bash /home/marvin/.openclaw/workspaces/zordon/skills/5e-lookup/tools/lookup.sh spell "Silvery Barbs" SCC
 
 # List all spells from a source
-bash {baseDir}/tools/lookup.sh spells PHB
+bash /home/marvin/.openclaw/workspaces/zordon/skills/5e-lookup/tools/lookup.sh spells PHB
 ```
 
 ### Item lookup
 
 ```bash
 # Look up an item by name
-bash {baseDir}/tools/lookup.sh item "Bag of Holding"
+bash /home/marvin/.openclaw/workspaces/zordon/skills/5e-lookup/tools/lookup.sh item "Bag of Holding"
 
 # List items filtered by rarity
-bash {baseDir}/tools/lookup.sh items rare
+bash /home/marvin/.openclaw/workspaces/zordon/skills/5e-lookup/tools/lookup.sh items rare
 ```
 
 ### Condition / Disease lookup
 
 ```bash
 # Look up a condition
-bash {baseDir}/tools/lookup.sh condition "Frightened"
+bash /home/marvin/.openclaw/workspaces/zordon/skills/5e-lookup/tools/lookup.sh condition "Frightened"
 
 # List all conditions
-bash {baseDir}/tools/lookup.sh conditions
+bash /home/marvin/.openclaw/workspaces/zordon/skills/5e-lookup/tools/lookup.sh conditions
 ```
 
 ### Background lookup
 
 ```bash
 # Look up a background
-bash {baseDir}/tools/lookup.sh background "Acolyte"
+bash /home/marvin/.openclaw/workspaces/zordon/skills/5e-lookup/tools/lookup.sh background "Acolyte"
 
 # List all backgrounds
-bash {baseDir}/tools/lookup.sh backgrounds
+bash /home/marvin/.openclaw/workspaces/zordon/skills/5e-lookup/tools/lookup.sh backgrounds
 ```
 
 ### Adventure commands
 
 ```bash
 # List all available adventures
-bash {baseDir}/tools/lookup.sh adventures
+bash /home/marvin/.openclaw/workspaces/zordon/skills/5e-lookup/tools/lookup.sh adventures
 
 # Show table of contents for an adventure (use the ID from the list)
-bash {baseDir}/tools/lookup.sh adventure-outline LMoP
+bash /home/marvin/.openclaw/workspaces/zordon/skills/5e-lookup/tools/lookup.sh adventure-outline LMoP
 
 # Read a specific chapter/section from an adventure
-bash {baseDir}/tools/lookup.sh adventure-read LMoP "Goblin Arrows"
+bash /home/marvin/.openclaw/workspaces/zordon/skills/5e-lookup/tools/lookup.sh adventure-read LMoP "Goblin Arrows"
 
 # Search adventure text for a keyword
-bash {baseDir}/tools/lookup.sh adventure-search LMoP "Cragmaw"
+bash /home/marvin/.openclaw/workspaces/zordon/skills/5e-lookup/tools/lookup.sh adventure-search LMoP "Cragmaw"
 ```
 
 ### Source reference
 
 ```bash
 # List common source abbreviations
-bash {baseDir}/tools/lookup.sh sources
+bash /home/marvin/.openclaw/workspaces/zordon/skills/5e-lookup/tools/lookup.sh sources
 ```
 
 ## Output format
@@ -122,7 +122,7 @@ The tool returns structured JSON with these fields:
 
 1. Run the 5e-lookup tool to get the JSON result
 2. Build a discord-embed compatible JSON object from the result
-3. Send it via `bash {discord-embed:baseDir}/tools/send-embed.sh <channel_id> '<embed_json>'`
+3. Send it via `bash /home/marvin/.openclaw/workspaces/zordon/skills/discord-embed/tools/send-embed.sh <channel_id> '<embed_json>'`
 
 ### Mapping lookup output → discord-embed JSON
 
@@ -144,7 +144,7 @@ The lookup tool output needs minor reshaping for the discord-embed format:
 After running `lookup.sh monster "Goblin"`, build and send:
 
 ```bash
-bash {discord-embed:baseDir}/tools/send-embed.sh CHANNEL_ID '{
+bash /home/marvin/.openclaw/workspaces/zordon/skills/discord-embed/tools/send-embed.sh CHANNEL_ID '{
   "title": "Goblin",
   "url": "https://5e.r2plays.games/bestiary.html#goblin_mm",
   "description": "Small humanoid, Neutral Evil\n\n**Traits**\n...",
