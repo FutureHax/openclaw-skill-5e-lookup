@@ -94,26 +94,64 @@ bash {baseDir}/tools/lookup.sh sources
 
 ## Output format
 
-The tool returns structured JSON with fields ready for Discord embed formatting. Every response includes:
+The tool returns structured JSON with these fields:
 
 - `title` — Name of the entry
 - `url` — Link to the 5etools page for this entry
 - `description` — Main text content
 - `fields` — Array of `{ "name", "value", "inline" }` objects for stats
-- `image` — URL to artwork (when available)
-- `footer` — Source book and page number
-- `color` — Suggested embed color as a decimal integer
+- `image` — URL to artwork (when available, or `null`)
+- `footer` — Source book and page number (plain string)
+- `color` — Embed color as a decimal integer
 
-## Formatting for Discord
+## Presenting results: use the discord-embed skill (REQUIRED)
 
-When presenting results to users, you MUST format the tool output as a rich Discord embed. Use the JSON fields directly:
+**You MUST send every 5e-lookup result through the discord-embed skill's `send-embed.sh` tool.** Never dump the JSON as plain text. Never describe the data in a regular message. Always send an embed card.
 
-- Set the embed **title** to the `title` field — make it a clickable link using the `url` field
-- Set the embed **description** from the `description` field
-- Add each item in `fields` as an embed field (use `inline: true` for stat blocks)
-- Set the embed **image** or **thumbnail** from the `image` field when present
-- Set the embed **footer** from the `footer` field
-- Set the embed **color** from the `color` field
+### Workflow
+
+1. Run the 5e-lookup tool to get the JSON result
+2. Build a discord-embed compatible JSON object from the result
+3. Send it via `bash {discord-embed:baseDir}/tools/send-embed.sh <channel_id> '<embed_json>'`
+
+### Mapping lookup output to discord-embed JSON
+
+The lookup tool output needs minor reshaping for the discord-embed format:
+
+| Lookup field | Discord embed field | Transform |
+|---|---|---|
+| `title` | `title` | Use directly |
+| `url` | `url` | Use directly |
+| `description` | `description` | Use directly |
+| `fields` | `fields` | Use directly (array of name/value/inline) |
+| `image` | `image` | Wrap: `{"url": "<image_value>"}` — omit if `null` |
+| `footer` | `footer` | Wrap: `{"text": "Zordon • <footer_value>"}` |
+| `color` | `color` | Use directly |
+| *(add)* | `timestamp` | Add current ISO timestamp |
+
+### Example: Monster lookup to embed
+
+After running `lookup.sh monster "Goblin"`, build and send:
+
+```bash
+bash {discord-embed:baseDir}/tools/send-embed.sh CHANNEL_ID '{
+  "title": "Goblin",
+  "url": "https://5e.r2plays.games/bestiary.html#goblin_mm",
+  "description": "Small humanoid, Neutral Evil\n\n**Traits**\n...",
+  "color": 15158332,
+  "image": {"url": "https://5e.r2plays.games/img/MM/Goblin.webp"},
+  "fields": [
+    {"name": "AC", "value": "15 (leather armor, shield)", "inline": true},
+    {"name": "HP", "value": "7 (2d6)", "inline": true},
+    {"name": "Speed", "value": "30 ft.", "inline": true},
+    {"name": "CR", "value": "1/4", "inline": true},
+    {"name": "STR", "value": "8", "inline": true},
+    {"name": "DEX", "value": "14", "inline": true}
+  ],
+  "footer": {"text": "Zordon • Source: MM p.166"},
+  "timestamp": "2026-02-12T20:00:00.000Z"
+}'
+```
 
 ### Color scheme
 
@@ -129,10 +167,12 @@ When presenting results to users, you MUST format the tool output as a rich Disc
 
 ### Response guidelines
 
-- For single-entry lookups (monster, spell, item, condition, background): always use a full embed with all available fields, artwork, and the link
-- For list commands (monsters, spells, items, adventures, conditions, backgrounds): present as a compact embed with entries as a numbered list in the description; cap at 20 entries and mention the total count
-- For adventure reads: use the embed description for the chapter text; split into multiple messages if content exceeds 4000 characters
-- Always include the 5etools link so the user can view the full page
+- For single-entry lookups (monster, spell, item, condition, background): send a full embed with all available fields, artwork, and the 5etools link
+- For list commands (monsters, spells, items, adventures, conditions, backgrounds): send a compact embed with entries in the description; cap at 20 entries and mention the total count
+- For adventure reads: use the embed description for the chapter text; split into multiple embeds if content exceeds 4000 characters
+- Always include the 5etools link as the embed `url` so users can click the title to view the full page
+- When `image` is not null, include it as `image: {url: "..."}` in the embed — this shows monster art, adventure covers, etc.
+- Keep your text response to one sentence or less — the embed IS the response
 - If the lookup returns an error or no results, tell the user clearly and suggest checking the name spelling or trying a different source
 
 ## When to use this skill
